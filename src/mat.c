@@ -1,4 +1,5 @@
 #include <string.h>
+#include <libio/console.h>
 
 #include "mat.h"
 
@@ -73,6 +74,35 @@ void mat_copy(mat_t *src, mat_t *dest) {
 	memcpy(&dest->strides, &src->strides, sizeof(uint16_t) * src->len_dims);
 	memcpy(&dest->sparse.dims, &src->sparse.dims, 
 		sizeof(uint16_t) * src->sparse.len_dims);
-	dest->sparse.offset = src->sparse.offset;
+	dest->sparse.offsets = src->sparse.offsets;
 	dest->sparse.sizes = src->sparse.sizes;
+}
+
+void mat_dump(mat_t *m, uint16_t which) {
+	uint16_t rows = MAT_GET_DIM(m, m->len_dims - 2);
+	uint16_t cols = MAT_GET_DIM(m, m->len_dims - 1);
+	PRINTF("\r\n===================== \r\n");
+	PRINTF("\r\nRows: %u\r\n", rows);
+	PRINTF("Cols: %u\r\n", cols);
+	for(uint16_t i = 0; i < rows; i ++) {
+		for(uint16_t j = 0; j < cols; j ++) {
+			PRINTF("%i ", MAT_GET(m, which, i, j));
+			if((j + 1) % cols == 0)
+				PRINTF("\r\n");
+		}
+	}
+	PRINTF("done ");
+	PRINTF("===================== \r\n");
+}
+
+void mat_debug_dump(mat_t *m, uint16_t which, fixed *dest) {
+	fixed *dest_ptr = dest;
+	uint16_t rows = MAT_GET_DIM(m, m->len_dims - 2);
+	uint16_t cols = MAT_GET_DIM(m, m->len_dims - 1);
+	for(uint16_t i = 0; i < rows; i ++) {
+		for(uint16_t j = 0; j < cols; j ++) {
+			*dest_ptr = MAT_GET(m, which, i, j);
+			dest_ptr++;
+		}
+	}
 }

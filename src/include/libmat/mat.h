@@ -12,15 +12,15 @@ typedef struct {
 	struct {
 		uint16_t dims[10];
 		uint16_t len_dims;
-		uint16_t *offset;
+		uint16_t *offsets;
 		uint16_t *sizes;
 	} sparse;
 } mat_t;
 
 #define MAT_NUMARGS(...)  (sizeof((uint16_t[]){__VA_ARGS__}) / sizeof(uint16_t))
 
-#define MAT_RESHAPE(m, ...) (mat_reshape(m, (uint16_t[]){__VA_ARGS__}),			\
-								MAT_NUMARGS(__VA_ARGS__))
+#define MAT_RESHAPE(m, ...) (mat_reshape(m, (uint16_t[]){__VA_ARGS__},			\
+								MAT_NUMARGS(__VA_ARGS__)))
 
 #define MAT_CONSTRAIN(m, ...) (mat_constrain(m, (uint16_t[]){__VA_ARGS__},		\
 								MAT_NUMARGS(__VA_ARGS__)))
@@ -69,6 +69,14 @@ typedef struct {
 
 #define MAT_COPY(src, dest) (mat_copy(src, dest))
 
+#ifdef CONFIG_CONSOLE
+	#define MAT_DUMP(m, w) (mat_dump(m, w))
+#else
+	#define MAT_DUMP(m, w) (void)(0)
+#endif
+
+#define MAT_DEBUG_DUMP(m, v, d) (mat_debug_dump(m, v, d))
+
 void mat_reshape(mat_t *, uint16_t[], uint16_t);
 mat_t mat_constrain(mat_t *, uint16_t[], uint16_t);
 fixed mat_get(mat_t *, uint16_t[], uint16_t);
@@ -78,6 +86,8 @@ uint16_t mat_get_dim(mat_t *, uint16_t);
 uint16_t mat_get_stride(mat_t *, uint16_t);
 void mat_transpose(mat_t *);
 void mat_copy(mat_t *, mat_t *);
+void mat_dump(mat_t *, uint16_t);
+void mat_debug_dump(mat_t *, uint16_t, fixed *);
 
 #endif
 

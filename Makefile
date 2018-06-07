@@ -2,7 +2,7 @@ LIB = libmat
 
 OBJECTS = mat.o
 
-DEPS = libfixed
+DEPS = libfixed libio
 
 override SRC_ROOT = ../../src
 

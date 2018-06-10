@@ -14,6 +14,7 @@ uint16_t _offset_calc(mat_t *m, uint16_t idxs[], uint16_t len) {
 void mat_reshape(mat_t *m, uint16_t dims[], uint16_t len) {
 	m->len_dims = len;
 	uint16_t running_stride = 1;
+	memset(m->strides, 1, sizeof(uint16_t) * (len + 1));
 	for(uint16_t i = 0; i < len; i++) {
 		m->dims[i] = dims[i];
 		m->strides[len - i - 1] = running_stride;
@@ -23,12 +24,17 @@ void mat_reshape(mat_t *m, uint16_t dims[], uint16_t len) {
 
 mat_t mat_constrain(mat_t *m, uint16_t idxs[], uint16_t len) {
 	uint16_t len_dims = m->len_dims - len;
+	uint16_t offset = _offset_calc(m, idxs, len);
 	mat_t c_m;
 	c_m.len_dims = len_dims;
-	memcpy(&c_m.sparse, &m->sparse, sizeof(m->sparse));
-	memcpy(&c_m.dims, (&m->dims) + len_dims, sizeof(uint16_t) * len_dims);
-	memcpy(&c_m.strides, (&m->strides) + len_dims, sizeof(uint16_t) * len_dims);
-	c_m.data = m->data + _offset_calc(m, idxs, len);
+	memcpy(c_m.dims, m->dims + len, sizeof(uint16_t) * len_dims);
+	memset(c_m.strides, 1, sizeof(uint16_t) * (len_dims + 1));
+	memcpy(c_m.strides, m->strides + len, sizeof(uint16_t) * len_dims);
+	memcpy(c_m.sparse.dims, m->sparse.dims + len, sizeof(uint16_t) * 10);
+	c_m.data = m->data + offset;
+	c_m.sparse.len_dims = m->sparse.len_dims;
+	c_m.sparse.offsets = m->sparse.offsets + offset;
+	c_m.sparse.sizes = m->sparse.sizes;
     return c_m;
 }
 
@@ -70,10 +76,13 @@ void mat_transpose(mat_t *m) {
 }
 
 void mat_copy(mat_t *src, mat_t *dest) {
-	memcpy(&dest->dims, &src->dims, sizeof(uint16_t) * src->len_dims);
-	memcpy(&dest->strides, &src->strides, sizeof(uint16_t) * src->len_dims);
-	memcpy(&dest->sparse.dims, &src->sparse.dims, 
+	memcpy(dest->dims, src->dims, sizeof(uint16_t) * src->len_dims);
+	memset(dest->strides, 1, sizeof(uint16_t) * src->len_dims);
+	memcpy(dest->strides, src->strides, sizeof(uint16_t) * src->len_dims);
+	memcpy(dest->sparse.dims, src->sparse.dims, 
 		sizeof(uint16_t) * src->sparse.len_dims);
+	dest->data = src->data;
+	dest->sparse.len_dims = src->sparse.len_dims;
 	dest->sparse.offsets = src->sparse.offsets;
 	dest->sparse.sizes = src->sparse.sizes;
 }
@@ -87,9 +96,8 @@ void mat_dump(mat_t *m, uint16_t which) {
 	for(uint16_t i = 0; i < rows; i ++) {
 		for(uint16_t j = 0; j < cols; j ++) {
 			PRINTF("%i ", MAT_GET(m, which, i, j));
-			if((j + 1) % cols == 0)
-				PRINTF("\r\n");
 		}
+		PRINTF("\r\n");
 	}
 	PRINTF("done ");
 	PRINTF("===================== \r\n");

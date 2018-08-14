@@ -1,5 +1,10 @@
 #include <string.h>
+#ifndef CONFIG_RISCV
 #include <libio/console.h>
+#else
+#include <stdio.h>
+#define PRINTF(...) printf(__VA_ARGS__)
+#endif
 
 #include "mat.h"
 

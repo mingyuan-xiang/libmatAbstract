@@ -2,7 +2,7 @@
 #ifndef CONFIG_RISCV
 #include <libio/console.h>
 #else
-#include <stdio.h>
+#include <libfemto/femto.h>
 #define PRINTF(...) printf(__VA_ARGS__)
 #endif
 
@@ -95,7 +95,7 @@ void mat_copy(mat_t *src, mat_t *dest) {
 void mat_dump(mat_t *m, uint16_t which) {
 	uint16_t rows = MAT_GET_DIM(m, m->len_dims - 2);
 	uint16_t cols = MAT_GET_DIM(m, m->len_dims - 1);
-	PRINTF("\r\n===================== \r\n");
+	PRINTF("\r\n=====================");
 	PRINTF("\r\nRows: %u\r\n", rows);
 	PRINTF("Cols: %u\r\n", cols);
 	for(uint16_t i = 0; i < rows; i ++) {

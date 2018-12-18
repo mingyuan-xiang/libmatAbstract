@@ -87,6 +87,7 @@ void mat_copy(mat_t *src, mat_t *dest) {
 	memcpy(dest->sparse.dims, src->sparse.dims, 
 		sizeof(uint16_t) * src->sparse.len_dims);
 	dest->data = src->data;
+	dest->len_dims = src->len_dims;
 	dest->sparse.len_dims = src->sparse.len_dims;
 	dest->sparse.offsets = src->sparse.offsets;
 	dest->sparse.sizes = src->sparse.sizes;

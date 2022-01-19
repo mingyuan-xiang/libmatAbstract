@@ -63,6 +63,14 @@ uint16_t mat_get_stride(mat_t *m, uint16_t axis) {
 	return m->strides[axis];
 }
 
+uint16_t mat_get_size(mat_t *m) {
+	uint16_t size = 1;
+	for(uint16_t i = 0; i < m->len_dims; i++) {
+		size *= m->dims[i];
+	}
+	return size;
+}
+
 void mat_transpose(mat_t *m) {
 	uint16_t start = 0;
 	uint16_t end = m->len_dims - 1;

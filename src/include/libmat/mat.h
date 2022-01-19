@@ -63,7 +63,9 @@ typedef struct {
 
 #define MAT_GET_DIM(m, axis) (mat_get_dim(m, axis))
 
-#define MAT_GET_STRIDE(m, aixs) (mat_get_stride(m, axis))
+#define MAT_GET_STRIDE(m, axis) (mat_get_stride(m, axis))
+
+#define MAT_GET_SIZE(m) (mat_get_size(m))
 
 #define MAT_TRANSPOSE(m) (mat_transpose(m))
 
@@ -84,6 +86,7 @@ fixed *mat_ptr(mat_t *, uint16_t[], uint16_t);
 void mat_set(mat_t *, fixed, uint16_t[], uint16_t);
 uint16_t mat_get_dim(mat_t *, uint16_t);
 uint16_t mat_get_stride(mat_t *, uint16_t);
+uint16_t mat_get_size(mat_t *);
 void mat_transpose(mat_t *);
 void mat_copy(mat_t *, mat_t *);
 void mat_dump(mat_t *, uint16_t);

@@ -2,11 +2,7 @@ LIB = libmat
 
 OBJECTS = mat.o
 
-ifeq ($(PLATFORM),RISCV)
-DEPS = libfemto libfixed libio
-else
-DEPS = libfixed libio
-endif
+DEPS = libfixed libmspprintf
 
 override SRC_ROOT = ../../src
 

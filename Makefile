@@ -1,4 +1,4 @@
-LIB = libmat
+LIB = libmatAbstract
 
 OBJECTS = mat.o
 

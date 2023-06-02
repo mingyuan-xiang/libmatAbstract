@@ -1,14 +1,14 @@
 #ifndef MAT_H
 #define MAT_H
 
-#include <libfixed/fixed.h>
+#include <libfixedAbstract/fixed.h>
 #include <stdint.h>
 
 typedef struct {
   uint16_t dims[10];
   uint16_t len_dims;
   uint16_t strides[10];
-  fixed_point *data;
+  fixed *data;
   struct {
     uint16_t dims[10];
     uint16_t len_dims;
@@ -82,15 +82,15 @@ typedef struct {
 
 void mat_reshape(mat_t *, uint16_t[], uint16_t);
 mat_t mat_constrain(mat_t *, uint16_t[], uint16_t);
-fixed_point mat_get(mat_t *, uint16_t[], uint16_t);
-fixed_point *mat_ptr(mat_t *, uint16_t[], uint16_t);
-void mat_set(mat_t *, fixed_point, uint16_t[], uint16_t);
+fixed mat_get(mat_t *, uint16_t[], uint16_t);
+fixed *mat_ptr(mat_t *, uint16_t[], uint16_t);
+void mat_set(mat_t *, fixed, uint16_t[], uint16_t);
 uint16_t mat_get_dim(mat_t *, uint16_t);
 uint16_t mat_get_stride(mat_t *, uint16_t);
 uint16_t mat_get_size(mat_t *);
 void mat_transpose(mat_t *);
 void mat_copy(mat_t *, mat_t *);
 void mat_dump(mat_t *, uint16_t);
-void mat_debug_dump(mat_t *, uint16_t, fixed_point *);
+void mat_debug_dump(mat_t *, uint16_t, fixed *);
 
 #endif

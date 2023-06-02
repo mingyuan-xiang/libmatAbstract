@@ -2,7 +2,7 @@ LIB = libmatAbstract
 
 OBJECTS = mat.o
 
-DEPS = libfixed libmspprintf
+DEPS = libfixedAbstract libmspprintf
 
 override SRC_ROOT = ../../src
 

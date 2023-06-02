@@ -37,15 +37,15 @@ mat_t mat_constrain(mat_t *m, uint16_t idxs[], uint16_t len) {
   return c_m;
 }
 
-fixed_point mat_get(mat_t *m, uint16_t idxs[], uint16_t len) {
+fixed mat_get(mat_t *m, uint16_t idxs[], uint16_t len) {
   return *mat_ptr(m, idxs, len);
 }
 
-fixed_point *mat_ptr(mat_t *m, uint16_t idxs[], uint16_t len) {
+fixed *mat_ptr(mat_t *m, uint16_t idxs[], uint16_t len) {
   return m->data + _offset_calc(m, idxs, len);
 }
 
-void mat_set(mat_t *m, fixed_point v, uint16_t idxs[], uint16_t len) {
+void mat_set(mat_t *m, fixed v, uint16_t idxs[], uint16_t len) {
   *(m->data + _offset_calc(m, idxs, len)) = v;
 }
 
@@ -107,8 +107,8 @@ void mat_dump(mat_t *m, uint16_t which) {
   msp_printf("===================== \r\n");
 }
 
-void mat_debug_dump(mat_t *m, uint16_t which, fixed_point *dest) {
-  fixed_point *dest_ptr = dest;
+void mat_debug_dump(mat_t *m, uint16_t which, fixed *dest) {
+  fixed *dest_ptr = dest;
   uint16_t rows = MAT_GET_DIM(m, m->len_dims - 2);
   uint16_t cols = MAT_GET_DIM(m, m->len_dims - 1);
   for (uint16_t i = 0; i < rows; i++) {

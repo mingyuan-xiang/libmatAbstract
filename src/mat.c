@@ -1,5 +1,4 @@
 #include <libmatAbstract/mat.h>
-#include <libmspprintf/mspprintf.h>
 #include <string.h>
 
 uint16_t _offset_calc(mat_t *m, uint16_t idxs[], uint16_t len) {
@@ -94,17 +93,17 @@ void mat_copy(mat_t *src, mat_t *dest) {
 void mat_dump(mat_t *m, uint16_t which) {
   uint16_t rows = MAT_GET_DIM(m, m->len_dims - 2);
   uint16_t cols = MAT_GET_DIM(m, m->len_dims - 1);
-  msp_printf("\r\n=====================");
-  msp_printf("\r\nRows: %u\r\n", rows);
-  msp_printf("Cols: %u\r\n", cols);
+  MATPRINTF("\r\n=====================");
+  MATPRINTF("\r\nRows: %u\r\n", rows);
+  MATPRINTF("Cols: %u\r\n", cols);
   for (uint16_t i = 0; i < rows; i++) {
     for (uint16_t j = 0; j < cols; j++) {
-      msp_printf("%i ", MAT_GET(m, which, i, j));
+      MATPRINTF("%i ", MAT_GET(m, which, i, j));
     }
-    msp_printf("\r\n");
+    MATPRINTF("\r\n");
   }
-  msp_printf("done ");
-  msp_printf("===================== \r\n");
+  MATPRINTF("done ");
+  MATPRINTF("===================== \r\n");
 }
 
 void mat_debug_dump(mat_t *m, uint16_t which, fixed *dest) {

@@ -2,7 +2,16 @@
 #define MAT_H
 
 #include <libfixedAbstract/fixed.h>
+#include <libmspprintf/mspprintf.h>
 #include <stdint.h>
+
+#ifndef CONFIG_MATCONSOLE
+#define MATPRINTF(fmt, ...) (void)0
+#define MAT_DUMP(m, w) (void)(0)
+#else
+#define MATPRINTF msp_printf
+#define MAT_DUMP(m, w) (mat_dump(m, w))
+#endif
 
 typedef struct {
   uint16_t dims[10];
@@ -71,12 +80,6 @@ typedef struct {
 #define MAT_TRANSPOSE(m) (mat_transpose(m))
 
 #define MAT_COPY(src, dest) (mat_copy(src, dest))
-
-#ifdef CONFIG_PRINT_PORT
-#define MAT_DUMP(m, w) (mat_dump(m, w))
-#else
-#define MAT_DUMP(m, w) (void)(0)
-#endif
 
 #define MAT_DEBUG_DUMP(m, v, d) (mat_debug_dump(m, v, d))
 

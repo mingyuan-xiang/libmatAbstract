@@ -80,10 +80,12 @@ typedef struct {
 #define MAT_TRANSPOSE(m) (mat_transpose(m))
 
 #define MAT_COPY(src, dest) (mat_copy(src, dest))
+#define MAT_SAMESHAPE(src, dest) (mat_sameshape(src, dest))
 
 #define MAT_DEBUG_DUMP(m, v, d) (mat_debug_dump(m, v, d))
 
 void mat_reshape(mat_t *, uint16_t[], uint16_t);
+void mat_sameshape(mat_t *, mat_t *);
 mat_t mat_constrain(mat_t *, uint16_t[], uint16_t);
 fixed mat_get(mat_t *, uint16_t[], uint16_t);
 fixed *mat_ptr(mat_t *, uint16_t[], uint16_t);

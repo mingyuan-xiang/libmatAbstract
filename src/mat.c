@@ -6,7 +6,7 @@
  * appropriate offset given the matrix dimensions and the reqested indices in
  * the virtual matrix.
  */
-uint16_t _offset_calc(mat_t *m, uint16_t idxs[], uint16_t len) {
+inline uint16_t _offset_calc(mat_t *m, uint16_t idxs[], uint16_t len) {
   uint16_t offset = 0;
   for (uint16_t i = 0; i < len; i++) {
     offset += m->strides[i] * idxs[i];
@@ -29,13 +29,13 @@ void mat_reshape(mat_t *m, uint16_t dims[], uint16_t len) {
 /* Sets the shape of two matrices to be equal.
  * NOTE: Does not alter the data, size, offsets or the respective fields
  */
-void mat_sameshape(mat_t *src, mat_t *dest) {
-  memcpy(dest->dims, src->dims, sizeof(uint16_t) * src->len_dims);
-  memcpy(dest->strides, src->strides, sizeof(uint16_t) * src->len_dims);
-  memcpy(dest->sparse.dims, src->sparse.dims,
+void mat_sameshape(mat_t *dst, mat_t *src) {
+  memcpy(dst->dims, src->dims, sizeof(uint16_t) * src->len_dims);
+  memcpy(dst->strides, src->strides, sizeof(uint16_t) * src->len_dims);
+  memcpy(dst->sparse.dims, src->sparse.dims,
          sizeof(uint16_t) * src->sparse.len_dims);
-  dest->len_dims = src->len_dims;
-  dest->sparse.len_dims = src->sparse.len_dims;
+  dst->len_dims = src->len_dims;
+  dst->sparse.len_dims = src->sparse.len_dims;
 }
 
 /* Constrains a matrix.
@@ -63,7 +63,7 @@ mat_t mat_constrain(mat_t *m, uint16_t idxs[], uint16_t len) {
  * elements that would normally be one after the other.
  */
 fixed mat_get(mat_t *m, uint16_t idxs[], uint16_t len) {
-  return *mat_ptr(m, idxs, len);
+  return *(m->data + _offset_calc(m, idxs, len));
 }
 
 /* Sets a value in the matrix given the indices
@@ -80,12 +80,11 @@ fixed *mat_ptr(mat_t *m, uint16_t idxs[], uint16_t len) {
 }
 
 uint16_t mat_get_dim(mat_t *m, uint16_t axis) { return m->dims[axis]; }
-
 uint16_t mat_get_stride(mat_t *m, uint16_t axis) { return m->strides[axis]; }
 
 /* Returns the total size of the matrix */
-uint16_t mat_get_size(mat_t *m) {
-  uint16_t size = 1;
+size_t mat_get_size(mat_t *m) {
+  size_t size = 1;
   for (uint16_t i = 0; i < m->len_dims; i++) {
     size *= m->dims[i];
   }
@@ -111,17 +110,39 @@ void mat_transpose(mat_t *m) {
 }
 
 /* copies the matrix INFORMATION, not the ACTUAL DATA */
-void mat_copy(mat_t *src, mat_t *dest) {
-  memcpy(dest->dims, src->dims, sizeof(uint16_t) * src->len_dims);
-  memset(dest->strides, 1, sizeof(uint16_t) * src->len_dims);
-  memcpy(dest->strides, src->strides, sizeof(uint16_t) * src->len_dims);
-  memcpy(dest->sparse.dims, src->sparse.dims,
+void mat_copy(mat_t *dst, mat_t *src) {
+  memcpy(dst->dims, src->dims, sizeof(uint16_t) * src->len_dims);
+  memset(dst->strides, 1, sizeof(uint16_t) * src->len_dims);
+  memcpy(dst->strides, src->strides, sizeof(uint16_t) * src->len_dims);
+  memcpy(dst->sparse.dims, src->sparse.dims,
          sizeof(uint16_t) * src->sparse.len_dims);
-  dest->data = src->data;
-  dest->len_dims = src->len_dims;
-  dest->sparse.len_dims = src->sparse.len_dims;
-  dest->sparse.offsets = src->sparse.offsets;
-  dest->sparse.sizes = src->sparse.sizes;
+  dst->data = src->data;
+  dst->len_dims = src->len_dims;
+  dst->sparse.len_dims = src->sparse.len_dims;
+  dst->sparse.offsets = src->sparse.offsets;
+  dst->sparse.sizes = src->sparse.sizes;
+}
+
+/* Checks if two matrix data are the same.
+ * Both matrices needs to have the same element count.
+ */
+bool mat_same(mat_t *dst, mat_t *src) {
+  size_t src_size = mat_get_size(src);
+  size_t dst_size = mat_get_size(dst);
+  if (dst_size != src_size) {
+    MATPRINTF("NOT SAME: matrices are not the same shape\r\n");
+    return false;
+  }
+
+  while (src_size != 0) {
+    src_size--;
+    if (src->data[src_size] != dst->data[src_size]) {
+      MATPRINTF("NOT SAME: At index %u src is %u and dst is %u\r\n", src_size,
+                src->data[src_size], dst->data[src_size]);
+      return false;
+    }
+  }
+  return true;
 }
 
 /* Prints a 2D matrix or a 2D section of a 3D matrix.
@@ -150,8 +171,8 @@ void mat_dump(mat_t *m, uint16_t which) {
 /* Copies over a 2D subsection of a 3D matrix into dest
  * Use which to specify which subsection should be copied
  */
-void mat_debug_dump(mat_t *m, uint16_t which, fixed *dest) {
-  fixed *dest_ptr = dest;
+void mat_debug_dump(mat_t *m, uint16_t which, fixed *dst) {
+  fixed *dest_ptr = dst;
   uint16_t rows = MAT_GET_DIM(m, m->len_dims - 2);
   uint16_t cols = MAT_GET_DIM(m, m->len_dims - 1);
   for (uint16_t i = 0; i < rows; i++) {

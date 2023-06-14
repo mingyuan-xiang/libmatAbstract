@@ -137,14 +137,40 @@ bool mat_same(mat_t *dst, mat_t *src) {
   while (src_size != 0) {
     src_size--;
     if (src->data[src_size] != dst->data[src_size]) {
-      MATPRINTF("NOT SAME: At index %u src is %u and dst is %u\r\n", src_size,
-                src->data[src_size], dst->data[src_size]);
+      MATPRINTF("NOT SAME: At index %u", src_size);
+      MATPRINTF(" src is %u", src->data[src_size]);
+      MATPRINTF(" and dst is %u\r\n", dst->data[src_size]);
       return false;
     }
   }
   return true;
 }
 
+bool mat_close(mat_t *dst, mat_t *src, fixed close) {
+  size_t src_size = mat_get_size(src);
+  size_t dst_size = mat_get_size(dst);
+  if (dst_size != src_size) {
+    MATPRINTF("NOT SAME: matrices are not the same shape\r\n");
+    return false;
+  }
+
+  while (src_size != 0) {
+    src_size--;
+    fixed diff;
+    if (src->data[src_size] > dst->data[src_size])
+      diff = src->data[src_size] - dst->data[src_size];
+    else
+      diff = dst->data[src_size] - src->data[src_size];
+
+    if (diff >= close) {
+      MATPRINTF("NOT CLOSE: At index %u", src_size);
+      MATPRINTF(" src is %u", src->data[src_size]);
+      MATPRINTF(" and dst is %u\r\n", dst->data[src_size]);
+      return false;
+    }
+  }
+  return true;
+}
 /* Prints a 2D matrix or a 2D section of a 3D matrix.
  * Use which to specify which subsection should be printed.
  */

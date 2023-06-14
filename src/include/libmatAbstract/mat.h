@@ -106,6 +106,7 @@ typedef struct {
 // checks if two matrix data are the same.
 // Both need to have the same number of elements or return false
 #define MAT_SAME(dst, src) (mat_same(dst, src))
+#define MAT_CLOSE(dst, src, close) (mat_close(dst, src, F_ABS(close)))
 
 // Debug purposes, dumps layer v of m into d
 #define MAT_DEBUG_DUMP(m, v, d) (mat_debug_dump(m, v, d))
@@ -122,6 +123,7 @@ size_t mat_get_size(mat_t *);
 void mat_transpose(mat_t *);
 void mat_copy(mat_t *, mat_t *);
 bool mat_same(mat_t *, mat_t *);
+bool mat_close(mat_t *, mat_t *, fixed);
 void mat_dump(mat_t *, uint16_t);
 void mat_debug_dump(mat_t *, uint16_t, fixed *);
 

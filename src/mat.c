@@ -162,7 +162,7 @@ bool mat_close(mat_t *dst, mat_t *src, fixed close) {
     else
       diff = dst->data[src_size] - src->data[src_size];
 
-    if (diff >= close) {
+    if (diff > close) {
       MATPRINTF("NOT CLOSE: At index %u", src_size);
       MATPRINTF(" src is %u", src->data[src_size]);
       MATPRINTF(" and dst is %u\r\n", dst->data[src_size]);

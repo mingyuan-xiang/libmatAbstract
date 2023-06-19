@@ -48,13 +48,13 @@ typedef struct {
  */
 #define MAT_GET(m, ...)                                                        \
   ((MAT_NUMARGS(__VA_ARGS__) == 1)                                             \
-       ? *(m->data + ((uint16_t[]){__VA_ARGS__})[0])                           \
+       ? *((m)->data + ((uint16_t[]){__VA_ARGS__})[0])                         \
    : (MAT_NUMARGS(__VA_ARGS__) == 2)                                           \
-       ? *(m->data + ((uint16_t[]){__VA_ARGS__})[0] * m->strides[0] +          \
+       ? *((m)->data + ((uint16_t[]){__VA_ARGS__})[0] * (m)->strides[0] +      \
            ((uint16_t[]){__VA_ARGS__})[1])                                     \
    : (MAT_NUMARGS(__VA_ARGS__) == 3)                                           \
-       ? *(m->data + ((uint16_t[]){__VA_ARGS__})[0] * m->strides[0] +          \
-           m->strides[1] * ((uint16_t[]){__VA_ARGS__})[1] +                    \
+       ? *((m)->data + ((uint16_t[]){__VA_ARGS__})[0] * (m)->strides[0] +      \
+           (m)->strides[1] * ((uint16_t[]){__VA_ARGS__})[1] +                  \
            ((uint16_t[]){__VA_ARGS__})[2])                                     \
        : mat_get(m, ((uint16_t[]){__VA_ARGS__}), MAT_NUMARGS(__VA_ARGS__)))
 
@@ -65,13 +65,13 @@ typedef struct {
  */
 #define MAT_PTR(m, ...)                                                        \
   ((MAT_NUMARGS(__VA_ARGS__) == 1)                                             \
-       ? (m->data + ((uint16_t[]){__VA_ARGS__})[0])                            \
+       ? ((m)->data + ((uint16_t[]){__VA_ARGS__})[0])                          \
    : (MAT_NUMARGS(__VA_ARGS__) == 2)                                           \
-       ? (m->data + ((uint16_t[]){__VA_ARGS__})[0] * m->strides[0] +           \
+       ? ((m)->data + ((uint16_t[]){__VA_ARGS__})[0] * (m)->strides[0] +       \
           ((uint16_t[]){__VA_ARGS__})[1])                                      \
    : (MAT_NUMARGS(__VA_ARGS__) == 3)                                           \
-       ? (m->data + ((uint16_t[]){__VA_ARGS__})[0] * m->strides[0] +           \
-          m->strides[1] * ((uint16_t[]){__VA_ARGS__})[1] +                     \
+       ? ((m)->data + ((uint16_t[]){__VA_ARGS__})[0] * (m)->strides[0] +       \
+          (m)->strides[1] * ((uint16_t[]){__VA_ARGS__})[1] +                   \
           ((uint16_t[]){__VA_ARGS__})[2])                                      \
        : mat_ptr(m, ((uint16_t[]){__VA_ARGS__}), MAT_NUMARGS(__VA_ARGS__)))
 
@@ -82,13 +82,13 @@ typedef struct {
  */
 #define MAT_SET(m, val, ...)                                                   \
   ((MAT_NUMARGS(__VA_ARGS__) == 1)                                             \
-       ? *(m->data + ((uint16_t[]){__VA_ARGS__})[0]) = val                     \
+       ? *((m)->data + ((uint16_t[]){__VA_ARGS__})[0]) = val                   \
    : (MAT_NUMARGS(__VA_ARGS__) == 2)                                           \
-       ? *(m->data + ((uint16_t[]){__VA_ARGS__})[0] * m->strides[0] +          \
+       ? *((m)->data + ((uint16_t[]){__VA_ARGS__})[0] * (m)->strides[0] +      \
            ((uint16_t[]){__VA_ARGS__})[1]) = val                               \
    : (MAT_NUMARGS(__VA_ARGS__) == 3)                                           \
-       ? *(m->data + ((uint16_t[]){__VA_ARGS__})[0] * m->strides[0] +          \
-           m->strides[1] * ((uint16_t[]){__VA_ARGS__})[1] +                    \
+       ? *((m)->data + ((uint16_t[]){__VA_ARGS__})[0] * (m)->strides[0] +      \
+           (m)->strides[1] * ((uint16_t[]){__VA_ARGS__})[1] +                  \
            ((uint16_t[]){__VA_ARGS__})[2]) = val                               \
        : mat_set(m, val, ((uint16_t[]){__VA_ARGS__}),                          \
                  MAT_NUMARGS(__VA_ARGS__)))

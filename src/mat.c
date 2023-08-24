@@ -26,38 +26,6 @@ void mat_reshape(mat_t *m, uint16_t dims[], uint16_t len) {
   }
 }
 
-/* Sets the shape of two matrices to be equal.
- * NOTE: Does not alter the data, size, offsets or the respective fields
- */
-void mat_sameshape(mat_t *dst, mat_t *src) {
-  memcpy(dst->dims, src->dims, sizeof(uint16_t) * src->len_dims);
-  memcpy(dst->strides, src->strides, sizeof(uint16_t) * src->len_dims);
-  memcpy(dst->sparse.dims, src->sparse.dims,
-         sizeof(uint16_t) * src->sparse.len_dims);
-  dst->len_dims = src->len_dims;
-  dst->sparse.len_dims = src->sparse.len_dims;
-}
-
-/* Constrains a matrix.
- * E.g. mat_get with indices i,j,k returns the first index residing at the
- * accessed submatrix. mat_constrain returns the resultant matrix.
- */
-mat_t mat_constrain(mat_t *m, uint16_t idxs[], uint16_t len) {
-  uint16_t len_dims = m->len_dims - len;
-  uint16_t offset = _offset_calc(m, idxs, len);
-  mat_t c_m;
-  c_m.len_dims = len_dims;
-  memcpy(c_m.dims, m->dims + len, sizeof(uint16_t) * len_dims);
-  memset(c_m.strides, 1, sizeof(uint16_t) * (len_dims + 1));
-  memcpy(c_m.strides, m->strides + len, sizeof(uint16_t) * len_dims);
-  memcpy(c_m.sparse.dims, m->sparse.dims + len, sizeof(uint16_t) * 10);
-  c_m.data = m->data + offset;
-  c_m.sparse.len_dims = m->sparse.len_dims;
-  c_m.sparse.offsets = m->sparse.offsets + offset;
-  c_m.sparse.sizes = m->sparse.sizes;
-  return c_m;
-}
-
 /* Gets a value given the indices from the matrix
  * NOTE: This is rather expensive, specially if your are accessing
  * elements that would normally be one after the other.
@@ -114,13 +82,11 @@ void mat_copy(mat_t *dst, mat_t *src) {
   memcpy(dst->dims, src->dims, sizeof(uint16_t) * src->len_dims);
   memset(dst->strides, 1, sizeof(uint16_t) * src->len_dims);
   memcpy(dst->strides, src->strides, sizeof(uint16_t) * src->len_dims);
-  memcpy(dst->sparse.dims, src->sparse.dims,
-         sizeof(uint16_t) * src->sparse.len_dims);
+  memcpy(dst->sparse.indices, src->sparse.indices,
+         sizeof(bool) * src->sparse.size);
   dst->data = src->data;
   dst->len_dims = src->len_dims;
-  dst->sparse.len_dims = src->sparse.len_dims;
-  dst->sparse.offsets = src->sparse.offsets;
-  dst->sparse.sizes = src->sparse.sizes;
+  dst->sparse.size = src->sparse.size;
 }
 
 /* Checks if two matrix data are the same.

@@ -16,15 +16,18 @@
 #endif
 
 typedef struct {
-  uint16_t dims[10];
+  uint16_t dims[4];
   uint16_t len_dims;
-  uint16_t strides[10];
-  fixed *data;
+  uint16_t strides[4];
+  fixed* data;
+  /*
+  * structural pruning parameters
+  * the input channels are pruned
+  */
+  // TODO: Use a union for other prune types
   struct {
-    uint16_t dims[10];
-    uint16_t len_dims;
-    uint16_t *offsets;
-    uint16_t *sizes;
+    bool* indices;
+    uint16_t size;
   } sparse;
 } mat_t;
 

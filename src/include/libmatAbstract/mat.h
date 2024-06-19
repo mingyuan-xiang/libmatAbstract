@@ -19,7 +19,6 @@ typedef struct {
   uint16_t dims[4];
   uint16_t len_dims;
   uint16_t strides[4];
-  uint16_t qf; // fixed-point format, e.g. qf = 1 (q1.14)
   fixed* data;
 } mat_t;
 

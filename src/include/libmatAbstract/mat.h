@@ -19,16 +19,8 @@ typedef struct {
   uint16_t dims[4];
   uint16_t len_dims;
   uint16_t strides[4];
+  uint16_t qf; // fixed-point format, e.g. qf = 1 (q1.14)
   fixed* data;
-  /*
-  * structural pruning parameters
-  * the input channels are pruned
-  */
-  // TODO: Use a union for other prune types
-  struct {
-    bool* indices;
-    uint16_t size;
-  } sparse;
 } mat_t;
 
 #define MAT_NUMARGS(...) (sizeof((uint16_t[]){__VA_ARGS__}) / sizeof(uint16_t))
@@ -104,7 +96,6 @@ typedef struct {
 // Matrix special ops that only touch matrix meta data, not
 // the actual contained data
 #define MAT_TRANSPOSE(m) (mat_transpose(m))
-#define MAT_COPY(dst, src) (mat_copy(dst, src))
 
 // checks if two matrix data are the same.
 // Both need to have the same number of elements or return false
@@ -124,7 +115,6 @@ uint16_t mat_get_dim(mat_t *, uint16_t);
 uint16_t mat_get_stride(mat_t *, uint16_t);
 size_t mat_get_size(mat_t *);
 void mat_transpose(mat_t *);
-void mat_copy(mat_t *, mat_t *);
 bool mat_same(mat_t *, mat_t *);
 bool mat_close(mat_t *, mat_t *, fixed);
 void mat_dump(mat_t *, uint16_t);

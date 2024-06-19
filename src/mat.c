@@ -77,18 +77,6 @@ void mat_transpose(mat_t *m) {
   }
 }
 
-/* copies the matrix INFORMATION, not the ACTUAL DATA */
-void mat_copy(mat_t *dst, mat_t *src) {
-  memcpy(dst->dims, src->dims, sizeof(uint16_t) * src->len_dims);
-  memset(dst->strides, 1, sizeof(uint16_t) * src->len_dims);
-  memcpy(dst->strides, src->strides, sizeof(uint16_t) * src->len_dims);
-  memcpy(dst->sparse.indices, src->sparse.indices,
-         sizeof(bool) * src->sparse.size);
-  dst->data = src->data;
-  dst->len_dims = src->len_dims;
-  dst->sparse.size = src->sparse.size;
-}
-
 /* Checks if two matrix data are the same.
  * Both matrices needs to have the same element count.
  */

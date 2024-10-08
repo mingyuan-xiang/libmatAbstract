@@ -109,6 +109,7 @@ typedef struct {
 void mat_reshape(mat_t *, uint16_t[], uint16_t);
 void mat_sameshape(mat_t *, mat_t *);
 mat_t mat_constrain(mat_t *, uint16_t[], uint16_t);
+void mat_copy(mat_t *src, mat_t *dest);
 fixed mat_get(mat_t *, uint16_t[], uint16_t);
 fixed *mat_ptr(mat_t *, uint16_t[], uint16_t);
 void mat_set(mat_t *, fixed, uint16_t[], uint16_t);

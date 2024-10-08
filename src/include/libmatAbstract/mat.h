@@ -35,6 +35,8 @@ typedef struct {
 #define MAT_CONSTRAIN(m, ...)                                                  \
   (mat_constrain(m, ((uint16_t[]){__VA_ARGS__}), MAT_NUMARGS(__VA_ARGS__)))
 
+#define MAT_COPY(src, dest) (mat_copy(src, dest))
+
 /* Gets a mtrix index
  * mat_get is too expensive to be called for the most common cases,
  * so this cascade of cases for the most common cases is enough to

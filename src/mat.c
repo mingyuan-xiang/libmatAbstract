@@ -162,3 +162,23 @@ void mat_debug_dump(mat_t *m, uint16_t which, fixed *dst) {
     }
   }
 }
+
+mat_t mat_constrain(mat_t *m, uint16_t idxs[], uint16_t len) {
+	uint16_t len_dims = m->len_dims - len;
+	uint16_t offset = _offset_calc(m, idxs, len);
+	mat_t c_m;
+	c_m.len_dims = len_dims;
+	memcpy(c_m.dims, m->dims + len, sizeof(uint16_t) * len_dims);
+	memset(c_m.strides, 1, sizeof(uint16_t) * (len_dims + 1));
+	memcpy(c_m.strides, m->strides + len, sizeof(uint16_t) * len_dims);
+	c_m.data = m->data + offset;
+    return c_m;
+}
+
+void mat_copy(mat_t *src, mat_t *dest) {
+	memcpy(dest->dims, src->dims, sizeof(uint16_t) * src->len_dims);
+	memset(dest->strides, 1, sizeof(uint16_t) * src->len_dims);
+	memcpy(dest->strides, src->strides, sizeof(uint16_t) * src->len_dims);
+	dest->data = src->data;
+	dest->len_dims = src->len_dims;
+}
